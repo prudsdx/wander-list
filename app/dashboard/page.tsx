@@ -22,7 +22,6 @@ import {
   Plus,
   Home,
   Compass,
-  User,
   ChevronRight,
 } from "lucide-react"
 
@@ -324,32 +323,32 @@ export default async function DashboardPage() {
             <span className="text-xs">Home</span>
           </Link>
           <Link
-            href="/explore"
+            href="/bucket-list"
             className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground"
           >
             <Compass className="h-5 w-5" />
-            <span className="text-xs">Explore</span>
+            <span className="text-xs">All</span>
           </Link>
           <Link
-            href="/places"
+            href="/bucket-list?type=place"
             className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground"
           >
             <MapPin className="h-5 w-5" />
             <span className="text-xs">Places</span>
           </Link>
           <Link
-            href="/trails"
+            href="/bucket-list?type=trail"
             className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground"
           >
             <Mountain className="h-5 w-5" />
             <span className="text-xs">Trails</span>
           </Link>
           <Link
-            href="/profile"
+            href="/bucket-list/new"
             className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground"
           >
-            <User className="h-5 w-5" />
-            <span className="text-xs">Profile</span>
+            <Plus className="h-5 w-5" />
+            <span className="text-xs">Add</span>
           </Link>
         </div>
       </nav>
