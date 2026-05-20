@@ -3,7 +3,6 @@ import { redirect } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/server"
 import type {
   BucketListItem,
@@ -117,34 +116,14 @@ export default async function DashboardPage() {
     trailsTotal > 0 ? Math.round((trailsHiked / trailsTotal) * 100) : 0
 
   return (
-    <div className="min-h-screen bg-background pb-20 md:pb-6">
+    <div className="min-h-screen bg-background pb-32 md:pb-6">
       {/* Top Navbar */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-14 items-center justify-between px-4">
+        <div className="flex h-14 items-center px-4">
           <Link href="/" className="flex items-center gap-2">
             <Mountain className="h-5 w-5 text-primary" />
             <span className="font-serif text-lg font-semibold">Wander List</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" asChild>
-              <Link href="/bucket-list?type=place">
-                <MapPin className="h-4 w-4" />
-                <span className="hidden sm:inline">My Places</span>
-              </Link>
-            </Button>
-            <Button size="sm" variant="outline" asChild>
-              <Link href="/bucket-list?type=trail">
-                <Footprints className="h-4 w-4" />
-                <span className="hidden sm:inline">My Trails</span>
-              </Link>
-            </Button>
-            <Button size="sm" asChild>
-              <Link href="/bucket-list/new">
-                <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline">Add New</span>
-              </Link>
-            </Button>
-          </div>
         </div>
       </header>
 
@@ -316,7 +295,10 @@ export default async function DashboardPage() {
       </main>
 
       {/* Bottom Tab Bar (Mobile) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background md:hidden">
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background md:hidden"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
         <div className="flex h-16 items-center justify-around">
           <Link href="/dashboard" className="flex flex-col items-center gap-1 text-primary">
             <Home className="h-5 w-5" />
