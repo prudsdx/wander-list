@@ -125,12 +125,26 @@ export default async function DashboardPage() {
             <Mountain className="h-5 w-5 text-primary" />
             <span className="font-serif text-lg font-semibold">Wander List</span>
           </Link>
-          <Button size="sm" asChild>
-            <Link href="/bucket-list/new">
-              <Plus className="h-4 w-4" />
-              <span>Add New</span>
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" asChild>
+              <Link href="/bucket-list?type=place">
+                <MapPin className="h-4 w-4" />
+                <span className="ml-1">Places</span>
+              </Link>
+            </Button>
+            <Button size="sm" variant="outline" asChild>
+              <Link href="/bucket-list?type=trail">
+                <Footprints className="h-4 w-4" />
+                <span className="ml-1">Trails</span>
+              </Link>
+            </Button>
+            <Button size="sm" asChild>
+              <Link href="/bucket-list/new">
+                <Plus className="h-4 w-4" />
+                <span className="ml-1">Add New</span>
+              </Link>
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -201,18 +215,14 @@ export default async function DashboardPage() {
         <section className="space-y-4">
           <div>
             <div className="mb-2 flex items-center justify-between text-sm">
-              <span>
-                Places: {placesVisited} of {placesTotal} visited
-              </span>
+              <span>Places: {placesVisited} of {placesTotal} visited</span>
               <span className="text-muted-foreground">{placesProgress}%</span>
             </div>
             <Progress value={placesProgress} className="h-2" />
           </div>
           <div>
             <div className="mb-2 flex items-center justify-between text-sm">
-              <span>
-                Trails: {trailsHiked} of {trailsTotal} hiked
-              </span>
+              <span>Trails: {trailsHiked} of {trailsTotal} hiked</span>
               <span className="text-muted-foreground">{trailsProgress}%</span>
             </div>
             <Progress
@@ -231,9 +241,7 @@ export default async function DashboardPage() {
                 {PLACE_CATEGORIES.map((category) => (
                   <Badge key={category} variant="secondary" className="gap-1">
                     {formatCategoryName(category)}
-                    <span className="text-muted-foreground">
-                      {categoryBreakdown[category]}
-                    </span>
+                    <span className="text-muted-foreground">{categoryBreakdown[category]}</span>
                   </Badge>
                 ))}
               </div>
@@ -249,9 +257,7 @@ export default async function DashboardPage() {
                     className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${difficulty.color}`}
                   >
                     {difficulty.name}
-                    <span className="opacity-70">
-                      {difficultyBreakdown[difficulty.key]}
-                    </span>
+                    <span className="opacity-70">{difficultyBreakdown[difficulty.key]}</span>
                   </span>
                 ))}
               </div>
@@ -263,10 +269,7 @@ export default async function DashboardPage() {
         <section>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-medium">Recently Added</h2>
-            <Link
-              href="/bucket-list"
-              className="flex items-center gap-1 text-sm text-primary hover:underline"
-            >
+            <Link href="/bucket-list" className="flex items-center gap-1 text-sm text-primary hover:underline">
               View All
               <ChevronRight className="h-4 w-4" />
             </Link>
@@ -278,11 +281,7 @@ export default async function DashboardPage() {
                   <div className="mb-2 flex items-start justify-between">
                     <Badge
                       variant="secondary"
-                      className={
-                        item.item_type === "place"
-                          ? "bg-blue-100 text-blue-700"
-                          : "bg-emerald-100 text-emerald-700"
-                      }
+                      className={item.item_type === "place" ? "bg-blue-100 text-blue-700" : "bg-emerald-100 text-emerald-700"}
                     >
                       {item.item_type === "place" ? "Place" : "Trail"}
                     </Badge>
@@ -291,9 +290,7 @@ export default async function DashboardPage() {
                     )}
                   </div>
                   <p className="font-medium leading-tight">{item.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {getItemLocation(item)}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{getItemLocation(item)}</p>
                 </CardContent>
               </Card>
             ))}
@@ -311,31 +308,19 @@ export default async function DashboardPage() {
             <Home className="h-5 w-5" />
             <span className="text-xs">Home</span>
           </Link>
-          <Link
-            href="/bucket-list"
-            className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground"
-          >
+          <Link href="/bucket-list" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground">
             <Compass className="h-5 w-5" />
             <span className="text-xs">All</span>
           </Link>
-          <Link
-            href="/bucket-list?type=place"
-            className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground"
-          >
+          <Link href="/bucket-list?type=place" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground">
             <MapPin className="h-5 w-5" />
             <span className="text-xs">Places</span>
           </Link>
-          <Link
-            href="/bucket-list?type=trail"
-            className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground"
-          >
+          <Link href="/bucket-list?type=trail" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground">
             <Mountain className="h-5 w-5" />
             <span className="text-xs">Trails</span>
           </Link>
-          <Link
-            href="/bucket-list/new"
-            className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground"
-          >
+          <Link href="/bucket-list/new" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground">
             <Plus className="h-5 w-5" />
             <span className="text-xs">Add</span>
           </Link>
