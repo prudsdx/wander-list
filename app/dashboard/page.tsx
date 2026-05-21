@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/server"
 import type {
   BucketListItem,
@@ -119,11 +120,17 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-background pb-32 md:pb-6">
       {/* Top Navbar */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-14 items-center px-4">
+        <div className="flex h-14 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
             <Mountain className="h-5 w-5 text-primary" />
             <span className="font-serif text-lg font-semibold">Wander List</span>
           </Link>
+          <Button size="sm" asChild>
+            <Link href="/bucket-list/new">
+              <Plus className="h-4 w-4" />
+              <span>Add New</span>
+            </Link>
+          </Button>
         </div>
       </header>
 
