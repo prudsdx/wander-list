@@ -95,19 +95,9 @@ function parseSort(value?: string): SortOption {
 
 function sortItems(items: BucketListItem[], sort: SortOption): BucketListItem[] {
   const sorted = [...items]
-
-  if (sort === "az") {
-    return sorted.sort((a, b) => a.name.localeCompare(b.name))
-  }
-
-  if (sort === "priority") {
-    return sorted.sort((a, b) => b.priority - a.priority)
-  }
-
-  return sorted.sort(
-    (a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-  )
+  if (sort === "az") return sorted.sort((a, b) => a.name.localeCompare(b.name))
+  if (sort === "priority") return sorted.sort((a, b) => b.priority - a.priority)
+  return sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 }
 
 export default async function BucketListPage({ searchParams }: PageProps) {
@@ -119,13 +109,9 @@ export default async function BucketListPage({ searchParams }: PageProps) {
   const sortBy = parseSort(params.sort)
 
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect("/login")
-  }
+  if (!user) redirect("/login")
 
   const fetchPlaces = typeFilter !== "trail"
   const fetchTrails = typeFilter !== "place"
@@ -134,48 +120,22 @@ export default async function BucketListPage({ searchParams }: PageProps) {
     await Promise.all([
       fetchPlaces
         ? (() => {
-            let query = supabase
-              .from("places")
-              .select("*")
-              .eq("user_id", user.id)
-
-            if (categoryFilter) {
-              query = query.eq("category", categoryFilter)
-            }
-
-            if (!showCompleted) {
-              query = query.eq("is_visited", false)
-            }
-
+            let query = supabase.from("places").select("*").eq("user_id", user.id)
+            if (categoryFilter) query = query.eq("category", categoryFilter)
+            if (!showCompleted) query = query.eq("is_visited", false)
             return query
           })()
         : Promise.resolve({ data: [] as Place[] }),
       fetchTrails
         ? (() => {
-            let query = supabase
-              .from("trails")
-              .select("*")
-              .eq("user_id", user.id)
-
-            if (difficultyFilter) {
-              query = query.eq("difficulty", difficultyFilter)
-            }
-
-            if (!showCompleted) {
-              query = query.eq("is_hiked", false)
-            }
-
+            let query = supabase.from("trails").select("*").eq("user_id", user.id)
+            if (difficultyFilter) query = query.eq("difficulty", difficultyFilter)
+            if (!showCompleted) query = query.eq("is_hiked", false)
             return query
           })()
         : Promise.resolve({ data: [] as Trail[] }),
-      supabase
-        .from("places")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", user.id),
-      supabase
-        .from("trails")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", user.id),
+      supabase.from("places").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("trails").select("*", { count: "exact", head: true }).eq("user_id", user.id),
     ])
 
   const userPlaces = (placesResult.data ?? []) as Place[]
@@ -200,6 +160,20 @@ export default async function BucketListPage({ searchParams }: PageProps) {
             <Badge variant="secondary" className="rounded-full">
               {totalCount}
             </Badge>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/dashboard">
+                <Home className="h-4 w-4" />
+                <span className="hidden sm:inline ml-1">Dashboard</span>
+              </Link>
+            </Button>
+            <Button size="sm" asChild>
+              <Link href="/bucket-list/new">
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline ml-1">Add New</span>
+              </Link>
+            </Button>
           </div>
         </div>
       </header>
@@ -234,31 +208,19 @@ export default async function BucketListPage({ searchParams }: PageProps) {
             <Home className="h-5 w-5" />
             <span className="text-xs">Home</span>
           </Link>
-          <Link
-            href="/bucket-list"
-            className="flex flex-col items-center gap-1 text-primary"
-          >
+          <Link href="/bucket-list" className="flex flex-col items-center gap-1 text-primary">
             <Compass className="h-5 w-5" />
             <span className="text-xs">All</span>
           </Link>
-          <Link
-            href="/bucket-list?type=place"
-            className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground"
-          >
+          <Link href="/bucket-list?type=place" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground">
             <MapPin className="h-5 w-5" />
             <span className="text-xs">Places</span>
           </Link>
-          <Link
-            href="/bucket-list?type=trail"
-            className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground"
-          >
+          <Link href="/bucket-list?type=trail" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground">
             <Mountain className="h-5 w-5" />
             <span className="text-xs">Trails</span>
           </Link>
-          <Link
-            href="/bucket-list/new"
-            className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground"
-          >
+          <Link href="/bucket-list/new" className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground">
             <Plus className="h-5 w-5" />
             <span className="text-xs">Add</span>
           </Link>
@@ -270,9 +232,7 @@ export default async function BucketListPage({ searchParams }: PageProps) {
 
 function PlaceCard({ place }: { place: Place & { item_type: "place" } }) {
   const isCompleted = place.is_visited
-  const location = place.city
-    ? `${place.city}, ${place.country}`
-    : place.country
+  const location = place.city ? `${place.city}, ${place.country}` : place.country
 
   return (
     <div className="flex flex-col">
@@ -294,29 +254,17 @@ function PlaceCard({ place }: { place: Place & { item_type: "place" } }) {
               <MapPin className="h-3 w-3" />
               {location}
             </p>
-
             <div className="mt-2 flex gap-1">
               {Array.from({ length: 5 }).map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-1.5 w-1.5 rounded-full ${
-                    i < place.priority ? "bg-primary" : "bg-border"
-                  }`}
-                />
+                <span key={i} className={`h-1.5 w-1.5 rounded-full ${i < place.priority ? "bg-primary" : "bg-border"}`} />
               ))}
             </div>
           </CardContent>
         </Card>
       </Link>
-
       {!isCompleted && (
         <form action={markPlaceVisited.bind(null, place.id)} className="mt-2">
-          <Button
-            type="submit"
-            size="sm"
-            variant="outline"
-            className="w-full text-xs"
-          >
+          <Button type="submit" size="sm" variant="outline" className="w-full text-xs">
             Mark Visited
           </Button>
         </form>
@@ -327,9 +275,7 @@ function PlaceCard({ place }: { place: Place & { item_type: "place" } }) {
 
 function TrailCard({ trail }: { trail: Trail & { item_type: "trail" } }) {
   const isCompleted = trail.is_hiked
-  const location = trail.region
-    ? `${trail.region}, ${trail.country}`
-    : trail.country
+  const location = trail.region ? `${trail.region}, ${trail.country}` : trail.country
 
   const formatDuration = (hours: number | null) => {
     if (hours === null) return "—"
@@ -357,33 +303,17 @@ function TrailCard({ trail }: { trail: Trail & { item_type: "trail" } }) {
               <Mountain className="h-3 w-3" />
               {location}
             </p>
-
             <div className="mt-2 flex flex-wrap gap-2 text-[10px] text-muted-foreground sm:text-xs">
-              <span className="flex items-center gap-0.5">
-                <Ruler className="h-3 w-3" />
-                {trail.distance_km ?? "—"}km
-              </span>
-              <span className="flex items-center gap-0.5">
-                <ArrowUp className="h-3 w-3" />
-                {trail.elevation_m ?? "—"}m
-              </span>
-              <span className="flex items-center gap-0.5">
-                <Clock className="h-3 w-3" />
-                {formatDuration(trail.duration_hours)}
-              </span>
+              <span className="flex items-center gap-0.5"><Ruler className="h-3 w-3" />{trail.distance_km ?? "—"}km</span>
+              <span className="flex items-center gap-0.5"><ArrowUp className="h-3 w-3" />{trail.elevation_m ?? "—"}m</span>
+              <span className="flex items-center gap-0.5"><Clock className="h-3 w-3" />{formatDuration(trail.duration_hours)}</span>
             </div>
           </CardContent>
         </Card>
       </Link>
-
       {!isCompleted && (
         <form action={markTrailHiked.bind(null, trail.id)} className="mt-2">
-          <Button
-            type="submit"
-            size="sm"
-            variant="outline"
-            className="w-full text-xs"
-          >
+          <Button type="submit" size="sm" variant="outline" className="w-full text-xs">
             Mark Hiked
           </Button>
         </form>
@@ -400,8 +330,7 @@ function EmptyState() {
       </div>
       <h3 className="mb-2 text-lg font-semibold">No items yet</h3>
       <p className="mb-4 max-w-xs text-sm text-muted-foreground">
-        Start building your bucket list by adding places to visit and trails to
-        hike.
+        Start building your bucket list by adding places to visit and trails to hike.
       </p>
       <Button asChild>
         <Link href="/bucket-list/new">
